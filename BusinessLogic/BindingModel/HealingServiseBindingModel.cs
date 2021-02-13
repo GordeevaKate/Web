@@ -1,19 +1,22 @@
 ﻿using BusinessLogic.Enums;
+using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace BusinessLogic.BindingModel
 {
     [DataContract]
-   public class ServiceBindingModel
+    public  class HealingServiseBindingModel
     {
         [DataMember]
         public int? Id { get; set; }
         [DataMember]
-        public string Name { get; set; }
+        public int HealingId { get; set; }
         [DataMember]
-        public double Cena { get; set; }
+        public int ServiseId { get; set; }
         [DataMember]
-        public ServiceStatus Status { get; set; }
+        public OutStatus Status { get; set; }
 
 
     }

@@ -1,21 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace BusinessLogic.BindingModel
 {
     [DataContract]
-    public class HealingBindingModel
+    public  class DiagnosisServiceBindingModel
     {
         [DataMember]
         public int? Id { get; set; }
         [DataMember]
-        public int  DoctorId{ get; set; }
-        [DataMember]
         public int DiagnosisId { get; set; }
         [DataMember]
-        public DateTime Data { get; set; }
-        [DataMember]
-        public decimal Temperatura { get; set; }
-
+        public int ServiceId { get; set; }
     }
 }
