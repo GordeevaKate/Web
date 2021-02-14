@@ -8,11 +8,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace KursacPis
+namespace WebClient
 {
     public class Program
     {
         public static DoctorViewModel User = null;
+        public static bool AdminMode = false;
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();

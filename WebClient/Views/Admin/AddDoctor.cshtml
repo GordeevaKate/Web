@@ -1,0 +1,21 @@
+﻿@model WebClient.Models.RegistrationModel
+
+@{
+    ViewData["Title"] = "Добавить доктора";
+}
+
+<div class="text-left text-info">
+    <h1>@ViewData["Title"]</h1>
+</div>
+@using (Html.BeginForm("AddDoctor", "Admin"))
+{
+    <p>
+        Логин:<br>
+        @Html.TextBoxFor(x => x.Login)<br>
+        Пароль:<br>
+        @Html.TextBoxFor(x => x.Password)<br>
+    </p>
+    @Html.ValidationSummary(true, "", new { @style = "color: blue" })
+    <input type="submit" value="Зарегистрироваться" class="btn btn-info btn-sm" />
+
+}

@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewData["Title"] = "Лечащие врачи";
+}
+<div class="text-center text-info">
+    <h1>Лечащие врачи</h1>
+</div>
+<hr />
+<p> <strong> <a class="btn btn-info btn-sm" asp-area="" asp-controller="Admin" asp-action="AddDoctor">Оформить</a></strong></p>
+<hr />
+@using (Html.BeginForm())
+{
+    <table class="table">
+        <tr>
+            <td>Логин</td>
+            <td>Пaроль</td>
+        </tr>
+        @foreach (var client in ViewBag.Doctors)
+        {
+            <tr>
+                <td>@client.Login</td>
+                <td>@client.Password</td>
+            </tr>
+
+        }
+    </table>
+}
