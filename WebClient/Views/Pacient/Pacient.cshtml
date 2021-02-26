@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewData["Title"] = "Больные";
+}
+<div class="text-center text-info">
+    <h1>Больные</h1>
+</div>
+<hr />
+
+<p> <strong> <a class="btn btn-success" asp-area="" asp-controller="Pacient" asp-action="CreatePacient">Добавить больного</a></strong></p>
+<hr />
+<table class="table">
+    <tr>
+        <td>Фио</td>
+        <td>полис</td>
+        <td>адрес</td>
+    </tr>
+    @foreach (var guest in ViewBag.Guests)
+    {
+<tr>
+    <td>@guest.FIO</td>
+    <td>@guest.Polis</td>
+    <td>@guest.Adress</td>
+    <td>
+        <a class="btn btn-primary btn-sm" asp-controller="Healing" asp-action="Healing" asp-route-id="@guest.Id" >Лечение</a>
+    </td>
+</tr>
+    }
+</table>

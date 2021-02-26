@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewData["Title"] = "Постояльцы номера ";
+}
+<div class="text-center text-info">
+    <h1>Услуги по диагнозу @ViewBag.Name</h1>
+</div>
+<hr />
+<hr />
+<p> <strong> <a class="btn btn-success" asp-area="" asp-controller="Spravka" asp-action="AddDS" asp-route-id="@ViewBag.Id">Добавить услугу</a></strong></p>
+<hr />
+<table class="table">
+    <tr>
+        <td>Название</td>
+        <td>Тип</td>
+        <td>Цена</td>
+    </tr>
+    @foreach (var room in ViewBag.DiaSer)
+    {
+        <tr>
+            <td>@room.Name</td>
+            <td>@room.Status</td>
+            <td>@room.Cena</td>
+        </tr>
+    }
+</table>
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>

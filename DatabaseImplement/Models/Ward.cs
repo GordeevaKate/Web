@@ -15,7 +15,6 @@ namespace DatabaseImplement.Models
         public int Number { get; set; }
         [Required]
         public int Mesto { get; set; }
-        public virtual List<PacientWard> PacientWards { get; set; }
 
     }
 }

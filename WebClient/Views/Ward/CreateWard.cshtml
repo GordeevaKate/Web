@@ -1,0 +1,24 @@
+﻿@model WebClient.Models.CreateWard
+
+@{
+    ViewData["Title"] = "Добавить палату";
+}
+<div class="text-center text-info">
+    <h1>@ViewData["Title"]</h1>
+</div>
+
+
+<hr />
+
+@using (Html.BeginForm("CreateWard", "Ward"))
+{
+    <p>
+        Номер:<br>
+        @Html.TextBoxFor(x => x.Number_Room)<br>
+        Вместительность: <br>
+        @Html.TextBoxFor(x => x.Mesto)<br>
+    </p>
+    @Html.ValidationSummary(true, "", new { @style = "color: blue" })
+    <input type="submit" value="Добавить" class="btn btn-info btn-sm" />
+
+}

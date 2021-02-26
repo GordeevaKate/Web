@@ -12,6 +12,7 @@ namespace DatabaseImplement.Models
     {
         public int? Id { get; set; }
         public int DoctorId { get; set; }
+        public int PacientId { get; set; }
         public int DiagnosisId { get; set; }
         [Required]
         public DateTime Data { get; set; }

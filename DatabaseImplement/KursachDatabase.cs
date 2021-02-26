@@ -21,7 +21,6 @@ namespace DatabaseImplement
         public virtual DbSet<Ward> Wards { set; get; }
         public virtual DbSet<Pacient> Pacients { set; get; }
         public virtual DbSet<Healing> Healings { set; get; }
-        public virtual DbSet<PacientWard> PacientWards { set; get; }
         public virtual DbSet<DiagnosisService> DiagnosisServices { set; get; }
         public virtual DbSet<HealingServise> HealingServises { set; get; }
     }

@@ -1,0 +1,30 @@
+﻿
+@{ ViewData["Title"] = "услуги"; }
+
+<div class="text-left">
+
+</div>
+
+<hr />
+<div>
+    <a class="text-dark" asp-action="DiaSer" asp-route-id="@ViewBag.Id">Вернуться назад</a>
+</div>
+<hr />
+<table class="table">
+    <tr>
+        <td>Name</td>
+        <td>Cena</td>
+        <td>Status</td>
+    </tr>
+    <tr>
+
+        @foreach (var guest in ViewBag.Guests)
+        {
+    <tr>
+        <td>@guest.Name</td>
+        <td>@guest.Cena</td>
+        <td>@guest.Status</td>
+        <td><a class="btn btn-primary btn-sm btn-block" asp-action="AddSD" asp-route-id="@ViewBag.Id" asp-route-sid="@guest.Id">Выбор постояльца</a></td>
+    </tr>
+    }
+    </table>

@@ -28,6 +28,10 @@ namespace WebClient
             services.AddControllersWithViews();
             services.AddTransient<IDoctor, DoctorLogic>();
             services.AddTransient<IDiagnosis, DiagnosisLogic>();
+            services.AddTransient<IService, ServiceLogic>();
+            services.AddTransient<IHealing, HealingLogic>();
+            services.AddTransient<IWard, WardLogic>();
+            services.AddTransient<IPacient, PacientLogic>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

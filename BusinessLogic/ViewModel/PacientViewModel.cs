@@ -16,7 +16,7 @@ namespace BusinessLogic.ViewModel
         public string FIO { get; set; }
         [DataMember]
         [DisplayName("Страховой полис")]
-        public int Polis { get; set; }
+        public string Polis { get; set; }
         [DataMember]
         [DisplayName("Адресс")]
         public string Adress { get; set; }

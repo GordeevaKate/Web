@@ -1,0 +1,25 @@
+﻿@model WebClient.Models.CreatePacient
+
+@{
+    ViewData["Title"] = "Добавить больные";
+}
+<div class="text-center text-info">
+    <h1>@ViewData["Title"]</h1>
+</div>
+
+
+<hr />
+
+@using (Html.BeginForm("CreatePacient", "Pacient"))
+{
+<p>
+    ФИО:<br>
+    @Html.TextBoxFor(x => x.FIO)<br>
+    Фдресс: <br>
+    @Html.TextBoxFor(x => x.Adress)<br>
+    Полюс: <br>
+    @Html.TextBoxFor(x => x.Polis)<br>
+</p>
+    @Html.ValidationSummary(true, "", new { @style = "color: blue" })
+    <input type="submit" value="Добавить" class="btn btn-info btn-sm" />
+}

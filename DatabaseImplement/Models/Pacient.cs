@@ -13,9 +13,8 @@ namespace DatabaseImplement.Models
         [Required]
         public string FIO { get; set; }
         [Required]
-        public int Polis { get; set; }
+        public string Polis { get; set; }
         [Required]
         public string Adress { get; set; }
-        public virtual List<PacientWard> PacientWards { get; set; }
     }
 }

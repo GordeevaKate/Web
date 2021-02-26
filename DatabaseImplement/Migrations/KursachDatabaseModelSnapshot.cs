@@ -96,6 +96,9 @@ namespace DatabaseImplement.Migrations
                     b.Property<int>("DoctorId")
                         .HasColumnType("int");
 
+                    b.Property<int>("PacientId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Temperatura")
                         .HasColumnType("decimal(18,2)");
 
@@ -147,44 +150,13 @@ namespace DatabaseImplement.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Polis")
-                        .HasColumnType("int");
+                    b.Property<string>("Polis")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Pacients");
-                });
-
-            modelBuilder.Entity("DatabaseImplement.Models.PacientWard", b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("DiagnosissId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PacientId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ServicesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WardId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DiagnosissId");
-
-                    b.HasIndex("PacientId");
-
-                    b.HasIndex("ServicesId");
-
-                    b.HasIndex("WardId");
-
-                    b.ToTable("PacientWards");
                 });
 
             modelBuilder.Entity("DatabaseImplement.Models.Service", b =>
@@ -229,13 +201,13 @@ namespace DatabaseImplement.Migrations
 
             modelBuilder.Entity("DatabaseImplement.Models.DiagnosisService", b =>
                 {
-                    b.HasOne("DatabaseImplement.Models.Diagnosis", "Diagnosiss")
+                    b.HasOne("DatabaseImplement.Models.Diagnosis", null)
                         .WithMany("DiagnosisServices")
                         .HasForeignKey("DiagnosisId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DatabaseImplement.Models.Service", "Services")
+                    b.HasOne("DatabaseImplement.Models.Service", null)
                         .WithMany("DiagnosisServices")
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -253,29 +225,6 @@ namespace DatabaseImplement.Migrations
                     b.HasOne("DatabaseImplement.Models.Service", "Services")
                         .WithMany("HealingServises")
                         .HasForeignKey("ServicesId");
-                });
-
-            modelBuilder.Entity("DatabaseImplement.Models.PacientWard", b =>
-                {
-                    b.HasOne("DatabaseImplement.Models.Diagnosis", "Diagnosiss")
-                        .WithMany()
-                        .HasForeignKey("DiagnosissId");
-
-                    b.HasOne("DatabaseImplement.Models.Pacient", null)
-                        .WithMany("PacientWards")
-                        .HasForeignKey("PacientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DatabaseImplement.Models.Service", "Services")
-                        .WithMany()
-                        .HasForeignKey("ServicesId");
-
-                    b.HasOne("DatabaseImplement.Models.Ward", null)
-                        .WithMany("PacientWards")
-                        .HasForeignKey("WardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

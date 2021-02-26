@@ -1,0 +1,41 @@
+﻿@model WebClient.Models.AddServiceModel
+
+@{
+    ViewData["Title"] = "Добавить";
+}
+<div class="text-center text-info">
+    <h1>@ViewData["Title"]</h1>
+</div>
+
+
+<hr />
+
+@if (ViewBag.Id == 1)
+{
+    @using (Html.BeginForm("AddLec", "Spravka"))
+    {
+        <p>
+            Name:<br>
+            @Html.TextBoxFor(x => x.Name)<br>
+            Cena: <br>
+            @Html.TextBoxFor(x => x.Count)<br>
+        </p>
+        @Html.ValidationSummary(true, "", new { @style = "color: blue" })
+        <input type="submit" value="Добавить" class="btn btn-info btn-sm" />
+
+    }
+}
+@if (ViewBag.Id != 1)
+{
+    @using (Html.BeginForm("AddPro", "Spravka"))
+    {
+        <p>
+            Name:<br>
+            @Html.TextBoxFor(x => x.Name)<br>
+            Cena: <br>
+            @Html.TextBoxFor(x => x.Count)<br>
+        </p>
+        @Html.ValidationSummary(true, "", new { @style = "color: blue" })
+        <input type="submit" value="Добавить" class="btn btn-info btn-sm" />
+    }
+}

@@ -11,6 +11,8 @@ namespace BusinessLogic.BindingModel
         [DataMember]
         public int  DoctorId{ get; set; }
         [DataMember]
+        public int PacientId { get; set; }
+        [DataMember]
         public int DiagnosisId { get; set; }
         [DataMember]
         public DateTime Data { get; set; }

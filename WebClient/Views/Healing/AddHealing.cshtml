@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Больные";
+}
+<div class="text-center text-info">
+    <h1>Больные</h1>
+</div>
+<hr />
+@if (@ViewBag.Temp != 0)
+{
+
+
+}
+<form method="get">
+    <div class="form-inline">
+
+        @Html.DropDownList("Diagnos", ViewBag.Diagnos as SelectList)
+        <input type="number" value=@ViewBag.Person name="Person" id="Person"  min="0">
+        <input type="submit" asp-controller="Healing" asp-route-id=@ViewBag.Id asp-action="AddService" value="Отчет агента за месяц этого года" class="btn btn-default" />
+    </div>
+</form>
+

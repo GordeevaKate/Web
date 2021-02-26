@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Eckeub";
+}
+@if (ViewBag.Id == 1)
+{
+    <div class="text-center text-info">
+        <h1>Лекарства</h1>
+    </div>
+}
+@if (ViewBag.Id != 1)
+{
+    <div class="text-center text-info">
+        <h1>Процедуры</h1>
+    </div>
+}
+<hr />
+<p> <strong> <a class="btn btn-success" asp-area="" asp-controller="Spravka" asp-action="AddService" asp-route-id=@ViewBag.Id>Добавить номер</a></strong></p>
+<hr />
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<table class="table">
+    <tr>
+        <td>Название</td>
+        <td>Цена</td>
+    </tr>
+    @foreach (var doctor in ViewBag.Diagnosis)
+    {
+        <tr>
+            <td>@doctor.Name</td>
+            <td>@doctor.Cena</td>
+        </tr>
+
+    }
+</table>

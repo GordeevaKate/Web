@@ -10,7 +10,5 @@ namespace DatabaseImplement.Models
         public int? Id { get; set; }
         public int DiagnosisId { get; set; }
         public int ServiceId { get; set; }
-        public virtual Diagnosis Diagnosiss { get; set; }
-        public virtual Service Services { get; set; }
     }
 }

@@ -11,7 +11,5 @@ namespace BusinessLogic.Interfaces
         List<WardViewModel> Read(WardBindingModel model);
         void CreateOrUpdate(WardBindingModel model);
         void Delete(WardBindingModel model);
-        List<PacientWardViewModel> ReadPacient(PacientWardBindingModel model);
-        void CreateOrUpdatePacient(PacientWardBindingModel model);
     }
 }

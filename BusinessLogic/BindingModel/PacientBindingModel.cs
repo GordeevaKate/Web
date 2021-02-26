@@ -10,7 +10,7 @@ namespace BusinessLogic.BindingModel
         [DataMember]
         public string  FIO{ get; set; }
         [DataMember]
-        public int Polis { get; set; }
+        public string Polis { get; set; }
         [DataMember]
         public string Adress { get; set; }
     }
