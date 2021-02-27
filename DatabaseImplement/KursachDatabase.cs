@@ -23,5 +23,6 @@ namespace DatabaseImplement
         public virtual DbSet<Healing> Healings { set; get; }
         public virtual DbSet<DiagnosisService> DiagnosisServices { set; get; }
         public virtual DbSet<HealingServise> HealingServises { set; get; }
+        public virtual DbSet<WardPacient> WardPacients { set; get; }
     }
 }

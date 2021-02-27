@@ -43,6 +43,7 @@ namespace DatabaseImplement.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DoctorId = table.Column<int>(nullable: false),
                     PacientId = table.Column<int>(nullable: false),
+                    WardId = table.Column<int>(nullable: false),
                     DiagnosisId = table.Column<int>(nullable: false),
                     Data = table.Column<DateTime>(nullable: false),
                     Temperatura = table.Column<decimal>(nullable: false)
@@ -150,6 +151,39 @@ namespace DatabaseImplement.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "WardPacients",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PacientId = table.Column<int>(nullable: false),
+                    WardId = table.Column<int>(nullable: false),
+                    WardsId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WardPacients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_WardPacients_Pacients_PacientId",
+                        column: x => x.PacientId,
+                        principalTable: "Pacients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_WardPacients_Wards_WardId",
+                        column: x => x.WardId,
+                        principalTable: "Wards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_WardPacients_Services_WardsId",
+                        column: x => x.WardsId,
+                        principalTable: "Services",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_DiagnosisServices_DiagnosisId",
                 table: "DiagnosisServices",
@@ -169,6 +203,21 @@ namespace DatabaseImplement.Migrations
                 name: "IX_HealingServises_ServicesId",
                 table: "HealingServises",
                 column: "ServicesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WardPacients_PacientId",
+                table: "WardPacients",
+                column: "PacientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WardPacients_WardId",
+                table: "WardPacients",
+                column: "WardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WardPacients_WardsId",
+                table: "WardPacients",
+                column: "WardsId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -183,16 +232,19 @@ namespace DatabaseImplement.Migrations
                 name: "HealingServises");
 
             migrationBuilder.DropTable(
-                name: "Pacients");
-
-            migrationBuilder.DropTable(
-                name: "Wards");
+                name: "WardPacients");
 
             migrationBuilder.DropTable(
                 name: "Diagnosiss");
 
             migrationBuilder.DropTable(
                 name: "Healings");
+
+            migrationBuilder.DropTable(
+                name: "Pacients");
+
+            migrationBuilder.DropTable(
+                name: "Wards");
 
             migrationBuilder.DropTable(
                 name: "Services");

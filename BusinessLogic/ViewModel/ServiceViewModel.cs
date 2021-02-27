@@ -11,7 +11,7 @@ namespace BusinessLogic.ViewModel
     public class ServiceViewModel
     {
         [DataMember]
-        public int? Id { get; set; }
+        public int Id { get; set; }
         [DataMember]
         [DisplayName("Название")]
         public string Name { get; set; }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DatabaseImplement.Migrations
 {
     [DbContext(typeof(KursachDatabase))]
-    [Migration("20210226155201_1")]
+    [Migration("20210227083921_1")]
     partial class _1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -103,6 +103,9 @@ namespace DatabaseImplement.Migrations
 
                     b.Property<decimal>("Temperatura")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("WardId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -201,6 +204,33 @@ namespace DatabaseImplement.Migrations
                     b.ToTable("Wards");
                 });
 
+            modelBuilder.Entity("DatabaseImplement.Models.WardPacient", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("PacientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WardId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WardsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PacientId");
+
+                    b.HasIndex("WardId");
+
+                    b.HasIndex("WardsId");
+
+                    b.ToTable("WardPacients");
+                });
+
             modelBuilder.Entity("DatabaseImplement.Models.DiagnosisService", b =>
                 {
                     b.HasOne("DatabaseImplement.Models.Diagnosis", null)
@@ -227,6 +257,25 @@ namespace DatabaseImplement.Migrations
                     b.HasOne("DatabaseImplement.Models.Service", "Services")
                         .WithMany("HealingServises")
                         .HasForeignKey("ServicesId");
+                });
+
+            modelBuilder.Entity("DatabaseImplement.Models.WardPacient", b =>
+                {
+                    b.HasOne("DatabaseImplement.Models.Pacient", "Pacients")
+                        .WithMany("WardPacients")
+                        .HasForeignKey("PacientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DatabaseImplement.Models.Ward", null)
+                        .WithMany("WardPacients")
+                        .HasForeignKey("WardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DatabaseImplement.Models.Service", "Wards")
+                        .WithMany()
+                        .HasForeignKey("WardsId");
                 });
 #pragma warning restore 612, 618
         }

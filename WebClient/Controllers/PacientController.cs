@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.BindingModel;
 using BusinessLogic.Interfaces;
+using BusinessLogic.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,14 +14,29 @@ namespace WebClient.Controllers
     public class PacientController : Controller
     {
         private readonly IPacient pacient;
-        public PacientController(IPacient pacient)
+		private readonly IWard ward;
+        public PacientController(IWard ward,IPacient pacient)
         {
             this.pacient = pacient;
+			this.ward = ward;
         }
 
 		public IActionResult Pacient()
 		{
 			ViewBag.Guests = pacient.Read(null);
+			return View();
+		}
+		public IActionResult WardPacient(int id)
+		{
+			ViewBag.Id = id;
+			ViewBag.Number = ward.Read(new WardBindingModel { Id = id })[0].Number ;
+			var guest =new List<PacientViewModel> { };
+			var pacients = ward.ReadPacient(new WardPacientBindingModel { WardId=id});
+			foreach(var p in pacients)
+            {
+				guest.Add(pacient.Read(new PacientBindingModel {Id=p.PacientId })[0]);
+            }
+			ViewBag.Guests = guest;
 			return View();
 		}
 		public IActionResult CreatePacient()

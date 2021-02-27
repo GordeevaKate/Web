@@ -16,5 +16,6 @@ namespace DatabaseImplement.Models
         public string Polis { get; set; }
         [Required]
         public string Adress { get; set; }
+        public virtual List<WardPacient> WardPacients { get; set; }
     }
 }

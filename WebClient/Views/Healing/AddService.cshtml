@@ -1,0 +1,39 @@
+﻿@model WebClient.Models.ServiceModel
+
+@{
+    ViewData["Title"] = "Добавить лекарство/процедуру пациенту " + @ViewBag.Name + " по диагнозу " + @ViewBag.Diagnosis;
+}
+
+<div class="text-center text-info">
+    <h1>@ViewData["Title"]</h1>
+</div>
+<hr />
+
+@using (Html.BeginForm())
+{
+    <input type="hidden" value="@ViewBag.Id" name="Id" />
+    <input type="hidden" value="@ViewBag.DiagnosisId" name="DiagnosisId" />
+    <input type="hidden" value="@ViewBag.Temp" name="Temp" />
+    <input type="hidden" value="@ViewBag.Number" name="Number" />
+    @Html.ValidationSummary(true, "", new { @style = "color: red" })
+    <p>Состав:</p>
+    <table class="table">
+        <tr>
+            <td>Name</td>
+            <td>Status</td>
+            <td>Cena</td>
+            <td>Количество</td>
+        </tr>
+        @foreach (BusinessLogic.ViewModel.ServiceViewModel doctor in ViewBag.Service)
+        {
+    <tr>
+        <td>@doctor.Name</td>
+        <td>@doctor.Status</td>
+        <td>@doctor.Cena</td>
+        <td><input type="number" name="Model.VisitDoctors[@doctor.Id]" value="0" min="0" /></td>
+    </tr>
+        }
+    </table>
+
+    <button type="submit" class="btn btn-info btn-sm">Создать</button>
+}

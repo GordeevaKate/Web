@@ -72,34 +72,26 @@ namespace WebClient.Controllers
         }
         public IActionResult DiaSer(int id)
         {
+            if (TempData["CustomError"] != null)
+            {
+                ModelState.AddModelError(string.Empty, TempData["CustomError"].ToString());
+            }
             ViewBag.Id = id;
             ViewBag.Name = diagnos.Read(new DiagnosisBindingModel { Id = id })[0].Name;
-            var ServiceYes = service.ReadDiagnosis(null);
-            var ServiceAll = service.Read(null);
-            var yesservice = new Dictionary<int, int> { };
-            var Service = new List<ServiceViewModel> { };
-
-            foreach (var gr in ServiceYes)
+            var ServiceYes = service.ReadDiagnosis(new DiagnosisServiceBindingModel { DiagnosisId=id});
+            List<ServiceViewModel> services = new List<ServiceViewModel> { };
+          foreach(var serv in ServiceYes)
             {
-                if ((!yesservice.ContainsKey(gr.ServiceId)))
-                {
-                    yesservice.Add(gr.ServiceId, 3);
-                }
+                services.Add(service.Read(new ServiceBindingModel { Id=serv.ServiceId})[0]);
             }
-            foreach (var g in ServiceAll)
-            {
-                if (yesservice.ContainsKey((int)g.Id))
-                {
-                    Service.Add(g);
-                }
-            }
-            ViewBag.DiaSer = Service;
+            ViewBag.DiaSer = services;
             return View();
         }
         public IActionResult AddDS(int id)
         {
             ViewBag.Id =id;
             var ServiceYes = service.ReadDiagnosis(new DiagnosisServiceBindingModel {DiagnosisId  = id });
+
             var ServiceAll = service.Read(null);
             var yesservice = new Dictionary<int, int> { };
             var Service = new List<ServiceViewModel> { };
@@ -108,7 +100,7 @@ namespace WebClient.Controllers
             {
                 if ((!yesservice.ContainsKey(gr.ServiceId)))
                 {
-                    yesservice.Add(gr.ServiceId, 3);
+                    yesservice.Add(gr.ServiceId, gr.ServiceId);
                 }
             }
             foreach (var g in ServiceAll)
@@ -120,7 +112,7 @@ namespace WebClient.Controllers
             }
             if (Service.Count == 0)
             {
-                string str = "Все постояльцы уже заселены в этот номер";
+                TempData["CustomError"] = "Все постояльцы уже заселены в этот номер";
                 return RedirectToAction("DiaSer", new { id =id});
 
             }
@@ -162,8 +154,9 @@ namespace WebClient.Controllers
            Cena=model.Count
             });
             return View("Service", new { Dynamic = ViewBag.Diagnosis= service.Read(new ServiceBindingModel
-            { Status = ServiceStatus.Лекарство })
-       });
+            { Status = ServiceStatus.Лекарство }),
+                id = 1
+            });
         }
         [HttpPost]
         public ActionResult AddPro(AddServiceModel model)

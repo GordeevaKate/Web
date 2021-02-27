@@ -77,10 +77,10 @@ namespace DatabaseImplement.Implements
                 return context.Services
                  .Where(rec => model == null
                 || (rec.Id == model.Id) || (model.Name == rec.Name && model.Status == rec.Status)||
-                 (model.Name == null && model.Status == rec.Status))
+                 (model.Name == null && model.Id==null &&model.Status == rec.Status))
                .Select(rec => new ServiceViewModel
                {
-                   Id = rec.Id,
+                   Id = (int)rec.Id,
                    Status = rec.Status,
                    Cena = rec.Cena,
                    Name = rec.Name
@@ -95,7 +95,7 @@ namespace DatabaseImplement.Implements
             {
                 return context.DiagnosisServices
                  .Where(rec => model == null
-                || (rec.Id == model.Id) || (model.DiagnosisId == rec.DiagnosisId && model.ServiceId==rec.ServiceId ))
+                || (rec.Id == model.Id) || (model.DiagnosisId == rec.DiagnosisId && model.ServiceId == 0)||(model.DiagnosisId == rec.DiagnosisId && model.ServiceId==rec.ServiceId ))
                .Select(rec => new DiagnosisServiceViewModel
                {
                    Id = rec.Id,

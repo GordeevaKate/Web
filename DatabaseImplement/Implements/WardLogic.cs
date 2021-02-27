@@ -35,6 +35,24 @@ namespace DatabaseImplement.Implements
                 context.SaveChanges();
             }
         }
+        public void CreateOrUpdate(WardPacientBindingModel model)
+        {
+            using (var context = new KursachDatabase())
+            {
+                WardPacient elem = model.Id.HasValue ? null : new WardPacient();
+              
+                    elem = context.WardPacients.FirstOrDefault(rec => rec.PacientId ==
+                       model.PacientId && rec.WardId==model.WardId);
+                    if (elem == null)
+                    {
+                    elem = new WardPacient();
+                    context.WardPacients.Add(elem);
+                }
+                elem.PacientId = model.PacientId;
+                elem.WardId = model.WardId;
+                context.SaveChanges();
+            }
+        }
 
 
         public void Delete(WardBindingModel model)
@@ -59,5 +77,22 @@ namespace DatabaseImplement.Implements
             }
         }
 
+
+        public List<WardPacientViewModel> ReadPacient(WardPacientBindingModel model)
+        {
+            using (var context = new KursachDatabase())
+            {
+                return context.WardPacients
+                 .Where(rec => model == null
+                || (rec.Id == model.Id) || rec.PacientId == model.PacientId ||rec.WardId==model.WardId)
+               .Select(rec => new WardPacientViewModel
+               {
+                   Id = rec.Id,
+                   PacientId = rec.PacientId,
+                   WardId = rec.WardId
+               })
+                .ToList();
+            }
+        }
     }
 }

@@ -3,15 +3,12 @@
     ViewData["Title"] = "Больные Палаты ";
 }
 <div class="text-center text-info">
-    <h1>Больные Палаты @ViewBag.WardId</h1>
+    <h1>Больные Палаты @ViewBag.Number</h1>
 </div>
 <hr />
 <div>
     <a class="text-dark" asp-controller="Ward" asp-action="Ward">Вернуться назад</a>
 </div>
-<hr />
-<p> <strong> <a class="btn btn-success" asp-area="" asp-controller="Pacient" asp-action="AddPacient" asp-route-wardid="@ViewBag.WardId">Добавить постояльца</a></strong></p>
-<hr />
 <table class="table">
     <tr>
         <td>Фио</td>

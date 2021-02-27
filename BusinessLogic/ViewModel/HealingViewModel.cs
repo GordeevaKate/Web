@@ -14,6 +14,8 @@ namespace BusinessLogic.ViewModel
         [DataMember]
         public int DoctorId { get; set; }
         [DataMember]
+        public int WardId { get; set; }
+        [DataMember]
         public int PacientId { get; set; }
         [DataMember]
         public int DiagnosisId { get; set; }

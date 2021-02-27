@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.BindingModel;
 using BusinessLogic.Interfaces;
+using BusinessLogic.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebClient.Models;
 
 namespace WebClient.Controllers
 {
@@ -15,11 +17,15 @@ namespace WebClient.Controllers
     {
     private readonly    IHealing heal;
         private readonly IPacient p;
+        private readonly IWard ward;
         private readonly IDiagnosis diagnos;
-        public HealingController(IHealing healing,IDiagnosis diagnosis, IPacient pacient )
+        private readonly IService service;
+        public HealingController(IService service,IHealing healing,IDiagnosis diagnosis, IPacient pacient , IWard ward)
         {
+            this.service = service;
             heal = healing;
             p = pacient;
+            this.ward = ward;
             diagnos = diagnosis;
         }
         public IActionResult Healing(int id)
@@ -34,18 +40,105 @@ namespace WebClient.Controllers
         {
             ViewBag.Person = 37;
             ViewBag.Id = id;
-              ViewBag.Diagnos = new SelectList(diagnos.Read(null), "Id", "Name");
-             return View();
+            ViewBag.Diagnos = new SelectList(diagnos.Read(null), "Id", "Name");
+            var number = ward.Read(null);
+            List<WardViewModel> wards = new List<WardViewModel> { };
+            foreach(var n in number)
+            {
+                if(ward.ReadPacient(new WardPacientBindingModel {WardId= (int)n.Id }).Count < n.Mesto)
+                {
+                    wards.Add(n);
+                }
+            }
+            ViewBag.Number = new SelectList(wards, "Id", "Number"); 
+            return View();
         }
-        public IActionResult AddService( int id, decimal Person, string  Diagnos)
+        public IActionResult AddService( int id, decimal Person, string  Diagnos, string Number)
         {
             ViewBag.Id = id;
+            ViewBag.DiagnosisId = Convert.ToInt32(Diagnos);
+            ViewBag.Number = Convert.ToInt32(Number);
+            ViewBag.Temp = Person;
+            ViewBag.Diagnosis = diagnos.Read(new DiagnosisBindingModel { Id = Convert.ToInt32(Diagnos) })[0].Name;
+            ViewBag.Name = p.Read(new PacientBindingModel { Id = id })[0].FIO;
+           var servicediagnos = service.ReadDiagnosis(new DiagnosisServiceBindingModel { DiagnosisId=Convert.ToInt32(Diagnos)});
+            List<ServiceViewModel> servis = new List<ServiceViewModel> { };
+            foreach(var s in servicediagnos)
+            {
+                servis.Add(service.Read(new ServiceBindingModel { Id = s.ServiceId})[0]);
+            }
             if (TempData["ErrorLack"] != null)
             {
                 ModelState.AddModelError("", TempData["ErrorLack"].ToString());
             }
            var d = new SelectList(diagnos.Read(new DiagnosisBindingModel { Id = Convert.ToInt32(Diagnos) }), "Id", "Name");
-            return View("AddHealing", new { id = id, Diagnos=d, Dynamic = ViewBag.Person = Person });
+            ViewBag.Service=servis;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult AddService(int id, decimal Temp, string DiagnosisId, string Number,ServiceModel model)
+        {
+
+            var visitDoctors = new List<HealingServiseBindingModel>();
+
+            foreach (var doctor in model.VisitDoctors)
+            {
+                if (doctor.Value > 0)
+                {
+                    visitDoctors.Add(new HealingServiseBindingModel
+                    {
+                       ServiseId=doctor.Key
+                    });
+                }
+            }
+            if (visitDoctors.Count == 0)
+            {
+                ModelState.AddModelError("", "Ни один service не выбран");
+                var servicediagnos = service.ReadDiagnosis(new DiagnosisServiceBindingModel { DiagnosisId = Convert.ToInt32(DiagnosisId) });
+                List<ServiceViewModel> servis = new List<ServiceViewModel> { };
+                foreach (var s in servicediagnos)
+                {
+                    servis.Add(service.Read(new ServiceBindingModel { Id = s.ServiceId })[0]);
+                }
+                ViewBag.Id = id;
+                 ViewBag.DiagnosisId = DiagnosisId;
+                      ViewBag.Number = Number;
+                      ViewBag.Temp = Temp;
+                      ViewBag.Diagnosis = diagnos.Read(new DiagnosisBindingModel { Id = Convert.ToInt32(DiagnosisId) })[0].Name;
+                     ViewBag.Name = p.Read(new PacientBindingModel { Id = id })[0].FIO;
+                      ViewBag.Service = servis;
+                return View("AddService", model);
+            }
+            ward.CreateOrUpdate(new WardPacientBindingModel { PacientId = id, WardId = Convert.ToInt32(Number) });
+            heal.CreateOrUpdate(new HealingBindingModel
+            {
+                WardId = Convert.ToInt32(Number),
+                Data = DateTime.Now,
+                DiagnosisId = Convert.ToInt32(DiagnosisId),
+                DoctorId = (int)Program.User.Id,
+                PacientId = id,
+                Temperatura = Temp
+            });
+            var t = heal.Read(new HealingBindingModel
+            {
+                WardId = Convert.ToInt32(Number),
+                DiagnosisId = Convert.ToInt32(DiagnosisId),
+                PacientId = id,
+                DoctorId = (int)Program.User.Id
+            });
+            foreach (var s in model.VisitDoctors)
+            {
+                if (s.Value > 0)
+                {
+                    for(int i=0; i<s.Value; i++)
+                    heal.CreateOrUpdateService(new HealingServiseBindingModel { 
+                     HealingId= (int)t[t.Count-1].Id,
+                      ServiseId=s.Key,
+                       Status = BusinessLogic.Enums.OutStatus.Непринято
+                    });
+                }
+            }
+            return RedirectToAction("Healing", new { id=id});
         }
     }
 }
