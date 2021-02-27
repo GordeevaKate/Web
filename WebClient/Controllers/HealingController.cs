@@ -28,6 +28,26 @@ namespace WebClient.Controllers
             this.ward = ward;
             diagnos = diagnosis;
         }
+
+
+
+        public IActionResult HealingService(int heallingid, int pacientid)
+        {
+            ViewBag.HealId = heallingid;
+            ViewBag.PacientId = pacientid;
+            ViewBag.FIO = p.Read(new PacientBindingModel { Id = pacientid })[0].FIO;
+            ViewBag.HS = heal.ReadService(new HealingServiseBindingModel {HealingId=heallingid });
+            return View();
+        }
+        public IActionResult ServiceOut(int id, int heallingid, int pacientid)
+        {
+            heal.CreateOrUpdateService(new HealingServiseBindingModel
+            {
+                Id = id,
+                Status = BusinessLogic.Enums.OutStatus.Принято
+            });
+            return RedirectToAction("HealingService", new { heallingid= heallingid, pacientid = pacientid });
+        }
         public IActionResult Healing(int id)
         {
             ViewBag.Id = id;

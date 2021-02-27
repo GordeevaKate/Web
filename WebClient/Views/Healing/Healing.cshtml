@@ -16,22 +16,25 @@
     </tr>
     @foreach (var guest in @ViewBag.Healing)
     {
-        <tr>
-            <td>@guest.Data</td>
-            @foreach (var diagnos in @ViewBag.Diagnos)
-            {
-                @if (@diagnos.Id == guest.DiagnosisId)
-                {
-                    <td>@diagnos.Name</td>
-                }
-            }
-            @foreach (var pacient in @ViewBag.Pacient)
-            {
-                @if (pacient.Id == guest.PacientId)
-                {
-                    <td>@pacient.FIO</td>
-                }
-            }
-        </tr>
+<tr>
+    <td>@guest.Data</td>
+    @foreach (var diagnos in @ViewBag.Diagnos)
+    {
+        @if (@diagnos.Id == guest.DiagnosisId)
+        {
+            <td>@diagnos.Name</td>
+        }
+    }
+    @foreach (var pacient in @ViewBag.Pacient)
+    {
+        @if (pacient.Id == guest.PacientId)
+        {
+            <td>@pacient.FIO</td>
+        }
+    }
+<td>
+    <a class="btn btn-primary btn-sm" asp-controller="Healing" asp-action="HealingService" asp-route-pacientid="@ViewBag.Id" asp-route-heallingid="@guest.Id">процедуры</a>
+</td>
+</tr>
     }
 </table>

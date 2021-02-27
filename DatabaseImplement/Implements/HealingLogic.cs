@@ -46,8 +46,8 @@ namespace DatabaseImplement.Implements
                 HealingServise elem = model.Id.HasValue ? null : new HealingServise();
                 if (model.Id.HasValue)
                 {
-                    elem = context.HealingServises.FirstOrDefault(rec => rec.HealingId ==
-                       model.HealingId && rec.ServiseId == model.ServiseId);
+                    elem = context.HealingServises.FirstOrDefault(rec => (
+                    (rec.HealingId ==model.HealingId && rec.ServiseId == model.ServiseId) ||( rec.Id == model.Id)) );
                     if (elem == null)
                     {
                         throw new Exception("Элемент не найден");
@@ -57,10 +57,10 @@ namespace DatabaseImplement.Implements
                 {
                     elem = new HealingServise();
                     context.HealingServises.Add(elem);
+                    elem.ServiseId = model.ServiseId;
+                    elem.HealingId = model.HealingId;
                 }
-                elem.ServiseId = model.ServiseId;
                 elem.Status = model.Status;
-                elem.HealingId = model.HealingId;
                 context.SaveChanges();
             }
         }
@@ -95,7 +95,21 @@ namespace DatabaseImplement.Implements
 
         public List<HealingServiseViewModel> ReadService(HealingServiseBindingModel model)
         {
-            throw new NotImplementedException();
+            using (var context = new KursachDatabase())
+            {
+                return context.HealingServises
+                 .Where(rec => model == null
+                || (rec.Id == model.Id) || model.HealingId==rec.HealingId
+             )
+               .Select(rec => new HealingServiseViewModel
+               {
+                   Id = rec.Id,
+                   HealingId = rec.HealingId,
+                   ServiseId = rec.ServiseId,
+                   Status = rec.Status
+               })
+                .ToList();
+            }
         }
     }
 }
