@@ -4,6 +4,7 @@ using BusinessLogic.Interfaces;
 using BusinessLogic.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,15 +53,49 @@ namespace WebClient.Controllers
             });
             return RedirectToAction("Diagnosis");
         }
-        public IActionResult Service(int id,AddServiceModel model)
+        public IActionResult Service(string Diagnos, int id,AddServiceModel model)
         {
+            var diagnoss = diagnos.Read(null);
+            diagnoss.Add(new DiagnosisViewModel { Id = 0 , Name="Все"});
+            ViewBag.Diagnos = new SelectList(diagnoss,"Id", "Name");
             ViewBag.Id = id;
-       if(id==1)
-            ViewBag.Diagnosis = service.Read(new ServiceBindingModel { Status=ServiceStatus.Лекарство});
-       else
-                ViewBag.Diagnosis = service.Read(new ServiceBindingModel { Status = ServiceStatus.Процедура });
+            if (id == 1)
+                if (Diagnos == null || Diagnos == "0")
+                    ViewBag.Diagnosis = service.Read(new ServiceBindingModel { Status = ServiceStatus.Лекарство });
+                else
+                {
+                    var servicediagnos = service.ReadDiagnosis(new DiagnosisServiceBindingModel { DiagnosisId = Convert.ToInt32(Diagnos) });
+                    List<ServiceViewModel> servis = new List<ServiceViewModel> { };
+                    foreach (var s in servicediagnos)
+                    {
+                        if(s.DiagnosisId== Convert.ToInt32(Diagnos))
+                            if(service.Read(new ServiceBindingModel { Id = s.ServiceId })[0].Status==ServiceStatus.Лекарство)
+                           servis.Add(service.Read(new ServiceBindingModel { Id = s.ServiceId })[0]);
+                    }
+                    ViewBag.Diagnosis = servis.OrderBy(u => u.Cena);
+                }
+
+            else
+            {
+                if (Diagnos == null || Diagnos == "0")
+                    ViewBag.Diagnosis = service.Read(new ServiceBindingModel { Status = ServiceStatus.Процедура });
+                else
+                {
+                    var servicediagnos = service.ReadDiagnosis(new DiagnosisServiceBindingModel { DiagnosisId = Convert.ToInt32(Diagnos) });
+                    List<ServiceViewModel> servis = new List<ServiceViewModel> { };
+                    foreach (var s in servicediagnos)
+                    {
+                        if (s.DiagnosisId == Convert.ToInt32(Diagnos))
+                            if (service.Read(new ServiceBindingModel { Id = s.ServiceId })[0].Status == ServiceStatus.Процедура)
+                                servis.Add(service.Read(new ServiceBindingModel { Id = s.ServiceId })[0]);
+                    }
+                    ViewBag.Diagnosis = servis.OrderBy(u => u.Cena);
+                }
+            }
             return View();
         }
+
+
         public IActionResult AddService(int id)
         {
             if (TempData["CustomError"] != null)

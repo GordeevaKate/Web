@@ -92,7 +92,7 @@ namespace WebClient.Controllers
                 ModelState.AddModelError("", TempData["ErrorLack"].ToString());
             }
            var d = new SelectList(diagnos.Read(new DiagnosisBindingModel { Id = Convert.ToInt32(Diagnos) }), "Id", "Name");
-            ViewBag.Service=servis;
+            ViewBag.Service=servis.OrderBy(u => u.Cena);
             return View();
         }
         [HttpPost]
@@ -126,7 +126,7 @@ namespace WebClient.Controllers
                       ViewBag.Temp = Temp;
                       ViewBag.Diagnosis = diagnos.Read(new DiagnosisBindingModel { Id = Convert.ToInt32(DiagnosisId) })[0].Name;
                      ViewBag.Name = p.Read(new PacientBindingModel { Id = id })[0].FIO;
-                      ViewBag.Service = servis;
+                      ViewBag.Service = servis.OrderBy(u => u.Cena);
                 return View("AddService", model);
             }
             ward.CreateOrUpdate(new WardPacientBindingModel { PacientId = id, WardId = Convert.ToInt32(Number) });

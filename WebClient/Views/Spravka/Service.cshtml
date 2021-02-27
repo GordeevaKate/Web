@@ -16,6 +16,19 @@
 <hr />
 <p> <strong> <a class="btn btn-success" asp-area="" asp-controller="Spravka" asp-action="AddService" asp-route-id=@ViewBag.Id>Добавить номер</a></strong></p>
 <hr />
+
+
+
+
+
+
+<form asp-action="Service">
+    <div class="form-inline">
+        <label class="control-label">Диагноз<br /></label>
+        @Html.DropDownList("Diagnos", ViewBag.Diagnos as SelectList)</br>
+        <input type="submit" value="Фильтр" class="btn btn-default" />
+    </div>
+</form>
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <table class="table">
     <tr>

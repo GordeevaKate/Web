@@ -84,7 +84,7 @@ namespace DatabaseImplement.Implements
                    Status = rec.Status,
                    Cena = rec.Cena,
                    Name = rec.Name
-               })
+               }).OrderBy(u => u.Cena)
                 .ToList();
             }
         }
