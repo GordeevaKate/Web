@@ -6,7 +6,10 @@
     <h1>Палаты</h1>
 </div>
 <hr />
+@if (Program.User.Status == BusinessLogic.Enums.DoctorStatus.Лечащий_Врач)
+{
 <p> <strong> <a class="btn btn-success" asp-area="" asp-controller="Ward" asp-action="CreateWard">Добавить номер</a></strong></p>
+}
 <hr />
 <table class="table">
     <tr>

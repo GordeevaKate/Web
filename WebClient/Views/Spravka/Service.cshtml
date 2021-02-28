@@ -13,10 +13,12 @@
         <h1>Процедуры</h1>
     </div>
 }
+@if (Program.User.Status == BusinessLogic.Enums.DoctorStatus.Лечащий_Врач)
+{
 <hr />
 <p> <strong> <a class="btn btn-success" asp-area="" asp-controller="Spravka" asp-action="AddService" asp-route-id=@ViewBag.Id>Добавить номер</a></strong></p>
 <hr />
-
+}
 
 <a class="btn btn-primary btn-sm" asp-controller="Spravka" asp-action="SendPdfSpravka"  asp-route-id=@ViewBag.Id>Весь прейскурант.pdf</a>
 

@@ -25,7 +25,7 @@
         </td>
         @foreach (BusinessLogic.ViewModel.ServiceViewModel service in ViewBag.Service)
         {
-            @if ((service.Status == BusinessLogic.Enums.ServiceStatus.Лекарство)&&(service.Id==doctor.ServiseId))
+            @if ((service.Status == BusinessLogic.Enums.ServiceStatus.Лекарство)&&(service.Id==doctor.ServiseId)&&(Program.User.Status==BusinessLogic.Enums.DoctorStatus.Медперсонал))
             {
 
 <td>
