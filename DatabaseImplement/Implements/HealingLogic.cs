@@ -76,8 +76,11 @@ namespace DatabaseImplement.Implements
             {
                 return context.Healings
                  .Where(rec => model == null
-                || (rec.Id == model.Id) || (model.DoctorId == rec.DoctorId && model.PacientId == model.PacientId&& model.WardId==0)||
-                (model.DoctorId == rec.DoctorId && model.PacientId == model.PacientId && model.WardId == rec.WardId && rec.DiagnosisId==model.DiagnosisId)
+                || (rec.Id == model.Id)|| (model.WardId == rec.WardId && 0 == model.DiagnosisId)
+                || ((model.Data!=null) && (rec.Data>=model.Data && rec.Data<=model.Data.AddYears(1).AddDays(-1)) )
+                ||(model.DoctorId == rec.DoctorId && model.PacientId == model.PacientId&& model.WardId==0)||
+                (model.DoctorId == rec.DoctorId && model.PacientId == model.PacientId &&
+                model.WardId == rec.WardId && rec.DiagnosisId==model.DiagnosisId)
                  )
                .Select(rec => new HealingViewModel
                {

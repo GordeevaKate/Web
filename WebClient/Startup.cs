@@ -1,4 +1,5 @@
 using BusinessLogic.Interfaces;
+using BusinessLogic.Report;
 using DatabaseImplement.Implements;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,6 +33,8 @@ namespace WebClient
             services.AddTransient<IHealing, HealingLogic>();
             services.AddTransient<IWard, WardLogic>();
             services.AddTransient<IPacient, PacientLogic>();
+            services.AddTransient<ReportLogic>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

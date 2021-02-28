@@ -12,6 +12,7 @@
     <tr>
         <td>Дата</td>
         <td>Диагноз</td>
+        <td>Температура</td>
         <td>Больной</td>
     </tr>
     @foreach (var guest in @ViewBag.Healing)
@@ -25,6 +26,7 @@
             <td>@diagnos.Name</td>
         }
     }
+      <td>@guest.Temperatura</td>
     @foreach (var pacient in @ViewBag.Pacient)
     {
         @if (pacient.Id == guest.PacientId)

@@ -1,12 +1,14 @@
 ﻿using BusinessLogic.BindingModel;
 using BusinessLogic.Enums;
 using BusinessLogic.Interfaces;
+using BusinessLogic.Report;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebClient.Models;
+using static BusinessLogic.Report.ReportLogic;
 
 namespace WebClient.Controllers
 {
@@ -14,9 +16,18 @@ namespace WebClient.Controllers
     {
         private string password = "qwerty";
         private readonly IDoctor _client;
-
-        public AdminController(IDoctor client)
+        private readonly IHealing heal;
+        private readonly IDiagnosis diagnosis;
+        private readonly IPacient pacient;
+        private readonly IWard ward;
+        private readonly ReportLogic report;
+        public AdminController(ReportLogic report,IWard ward, IHealing healing,IPacient pacient, IDiagnosis diagnosis, IDoctor client)
         {
+            this.report = report;
+            this.ward = ward;
+            this.diagnosis = diagnosis;
+            this.pacient = pacient;
+            heal = healing;
             _client = client;
         }
         public IActionResult Index(AdminModel model)
@@ -149,11 +160,129 @@ namespace WebClient.Controllers
             });
             return View();
         }
-     
+
         public IActionResult Logout()
         {
             Program.AdminMode = false;
             return RedirectToAction("Index", "Home");
+        }
+        [HttpGet]
+        public JsonResult Metod()
+        {
+            List<DiagrammaModel> testDataFirst = new List<DiagrammaModel>();
+            var palats = ward.Read(null);
+            foreach (var palat in palats)
+            {
+                decimal count = 0;
+                var temps = heal.Read(new HealingBindingModel { WardId= (int)palat.Id});
+                foreach (var temp in temps)
+                {
+
+                        count=(count+temp.Temperatura);
+
+                }
+                if (temps.Count != 0)
+                    count = count / temps.Count;
+                testDataFirst.Add(new DiagrammaModel() { cityName = Convert.ToString(palat.Number), PopulationYear2020 = count });
+            }
+
+            var populationList = testDataFirst;
+            return Json(populationList);
+        }
+            public IActionResult AnaliticReport(string Person)
+        {
+            var heals = heal.Read(new HealingBindingModel { Data= new DateTime(Convert.ToInt32(Person), 1, 1) });
+            string fileName = "C:\\data\\" +
+            $"Аналитический отчет  за-{Person}.pdf";
+
+            report.SaveFileAnalitic(fileName, heals, Person);
+            var Diagnosis = diagnosis.Read(null);
+            List<counts> people = new List<counts> { };
+            var Pacient = pacient.Read(null);
+            var Counts = heal.Read(new HealingBindingModel { Data = new DateTime(Convert.ToInt32(Person), 1, 1) });
+            foreach (var x in Diagnosis)
+            {
+
+                foreach (var y in Pacient)
+                {
+                    people.Add(new counts
+                    {
+                        PacientId = (int)y.Id,
+                        DiagnosisId = (int)x.Id,
+                        Count = Counts.Where(c => c.DiagnosisId == x.Id && c.PacientId == y.Id).ToList().Count
+                    });
+                }
+            }
+            ViewBag.Diagnosis = diagnosis.Read(null);
+            ViewBag.Pacient = pacient.Read(null);
+            ViewBag.Count = Counts.Count;
+            ViewBag.list = people;
+            ViewBag.Person = Person;
+            return View("Report", new {Person=Person });
+        }
+
+        public IActionResult ReportPere(string id)
+        {
+            var heals = heal.Read(new HealingBindingModel { Data = new DateTime(Convert.ToInt32(id), 1, 1) });
+            string fileName = "C:\\data\\" +
+            $"Перекрестный отчет  за-{id}.pdf";
+            var Diagnosis = diagnosis.Read(null);
+            List<counts> people = new List<counts> { };
+            var Pacient = pacient.Read(null);
+            var Counts = heal.Read(new HealingBindingModel { Data = new DateTime(Convert.ToInt32(id), 1, 1) });
+            foreach (var x in Diagnosis)
+            {
+
+                foreach (var y in Pacient)
+                {
+                    people.Add(new counts
+                    {
+                        PacientId = (int)y.Id,
+                        DiagnosisId = (int)x.Id,
+                        Count = Counts.Where(c => c.DiagnosisId == x.Id && c.PacientId == y.Id).ToList().Count
+                    });
+                }
+            }
+            ViewBag.Diagnosis = diagnosis.Read(null);
+            ViewBag.Pacient = pacient.Read(null);
+            ViewBag.Count = Counts.Count;
+            ViewBag.list = people;
+            ViewBag.Person = id;
+            report.SaveFilePere(fileName, diagnosis.Read(null), pacient.Read(null), people, id);
+            return View("Report", new { Person = id });
+        }
+
+        
+
+
+        public IActionResult Report(string Person)
+        {if (Person == null)
+            {
+                Person = $"{DateTime.Now.Year}";
+               
+            }
+               
+            var Diagnosis = diagnosis.Read(null);
+          List<counts> people = new List<counts> { };
+            var Pacient = pacient.Read(null);
+            var Counts = heal.Read(new HealingBindingModel { Data = new DateTime(Convert.ToInt32(Person), 1, 1) });
+            foreach (var x in Diagnosis)
+            {
+
+                foreach (var y in Pacient)
+                {
+                    people.Add(new counts { 
+                        PacientId= (int)y.Id,
+                        DiagnosisId = (int)x.Id,
+                        Count = Counts.Where(c => c.DiagnosisId == x.Id && c.PacientId == y.Id).ToList().Count});
+                }
+            }
+            ViewBag.Person = Person;
+            ViewBag.Diagnosis = diagnosis.Read(null);
+            ViewBag.Pacient = pacient.Read(null);
+            ViewBag.Count = Counts.Count;
+            ViewBag.list = people;
+            return View();
         }
     }
     }

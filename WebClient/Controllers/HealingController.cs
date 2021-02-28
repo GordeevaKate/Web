@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.BindingModel;
 using BusinessLogic.Interfaces;
+using BusinessLogic.Report;
 using BusinessLogic.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,8 +21,10 @@ namespace WebClient.Controllers
         private readonly IWard ward;
         private readonly IDiagnosis diagnos;
         private readonly IService service;
-        public HealingController(IService service,IHealing healing,IDiagnosis diagnosis, IPacient pacient , IWard ward)
+        private readonly ReportLogic report;
+        public HealingController(ReportLogic report,IService service,IHealing healing,IDiagnosis diagnosis, IPacient pacient , IWard ward)
         {
+            this.report = report;
             this.service = service;
             heal = healing;
             p = pacient;
@@ -29,10 +32,21 @@ namespace WebClient.Controllers
             diagnos = diagnosis;
         }
 
-
+        public IActionResult SendPdfReport(int id, int pid,int hid)
+        {
+            //   var guests = room.ReadGuest(new GuestRoomViewModel { RoomId = id });
+            var services = service.Read(new ServiceBindingModel { Id=id})[0];
+            var pacient = p.Read(new PacientBindingModel {Id = pid })[0];
+            string fileName = "C:\\data\\" + 
+            $"Рецепт  на {services.Name}за-{DateTime.Now.Year}.{DateTime.Now.Month}.{DateTime.Now.Day}" +
+            DateTime.Now.Minute + ".pdf";
+            report.SaveFile(fileName, services,pacient, Program.User);
+            return RedirectToAction("HealingService", new { heallingid = hid, pacientid =pid});
+        }
 
         public IActionResult HealingService(int heallingid, int pacientid)
         {
+            ViewBag.Service = service.Read(null);
             ViewBag.HealId = heallingid;
             ViewBag.PacientId = pacientid;
             ViewBag.FIO = p.Read(new PacientBindingModel { Id = pacientid })[0].FIO;

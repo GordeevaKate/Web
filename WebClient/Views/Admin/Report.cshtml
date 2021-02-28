@@ -1,0 +1,116 @@
+﻿<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<div id="chart_div"></div>
+<script type="text/javascript">
+    google.charts.load('current', {
+        packages: ['corechart', 'bar']
+    });
+    google.charts.setOnLoadCallback(LoadData);
+    function LoadData() {
+        $.ajax({
+            url: 'https://localhost:44344/Admin/Metod',
+            dataType: "json",
+            type: "GET",
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                toastr.error(err.message);
+            },
+            success: function (data) {
+                Metod(data);
+                return false;
+            }
+        });
+        return false;
+    }
+    function Metod(data) {
+        var dataArray = [
+            ['Палаты', 'Средняя температура']
+        ];
+        $.each(data, function (i, item) {
+            dataArray.push([item.cityName, item.populationYear2020]);
+        });
+        var data = google.visualization.arrayToDataTable(dataArray);
+        var options = {
+            title: 'Средняя температура по палатам',
+            is3D: true,
+            isStacked: true,
+            chartArea: {
+                width: '50%'
+            },
+            colors: ['#b0120a'],
+            hAxis: {
+                title: 'Номера',
+                minValue: 0
+            },
+            vAxis: {
+                title: 'Температура'
+            }
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+        return false;
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<form method="get">
+    <div class="form-inline">
+        <input type="number" name="Person" min="1900" max="2099" step="1" value=@ViewBag.Person />
+        <button type="submit" class="btn btn-info btn-sm">Подсчёт</button>
+    </div>
+</form>
+
+<div class="text-center text-info">
+    <h1>За выбранный год @ViewBag.Person было выписано @ViewBag.Count лечений</h1>
+</div>
+
+<table class="table">
+    <tr>
+        <td>Пациент-диагноз</td>
+        @foreach (var diagnos in ViewBag.Diagnosis)
+        {
+            <td>@diagnos.Name</td>
+        }
+    </tr>
+    @foreach (var pacient in ViewBag.Pacient)
+    {
+        <tr>
+            <td>@pacient.FIO</td>
+            @foreach (var diagnos in ViewBag.Diagnosis)
+            {
+                @foreach (var list1 in ViewBag.list)
+                {
+                    @if (@list1.DiagnosisId == @diagnos.Id)
+                    {
+                        @if (@list1.PacientId == pacient.Id)
+                        {
+                            <td>@list1.Count</td>
+                        }
+                    }
+
+                }
+            }
+        </tr>
+    }
+</table>
+<p>
+    <a class="btn btn-primary btn-sm" asp-controller="Admin" asp-route-id=@ViewBag.Person asp-action="ReportPere">Перекрестный отчет</a>
+</p>
+
+<form method="get">
+    <div class="form-inline">
+        <input type="number" name="Person" min="1900" max="2099" step="1" value=@ViewBag.Person />
+        <input type="submit" asp-controller="Admin" asp-action="AnaliticReport" value="АО" class="btn btn-default" />
+    </div>
+</form>

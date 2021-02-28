@@ -1,6 +1,7 @@
 ﻿using BusinessLogic.BindingModel;
 using BusinessLogic.Enums;
 using BusinessLogic.Interfaces;
+using BusinessLogic.Report;
 using BusinessLogic.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +18,10 @@ namespace WebClient.Controllers
     {
         private readonly IDiagnosis diagnos;
         private readonly IService service;
-
-        public SpravkaController(IDiagnosis client, IService se)
+        private readonly ReportLogic report;
+        public SpravkaController(IDiagnosis client, ReportLogic report, IService se)
         {
+            this.report = report;
             diagnos = client;
             service = se;
         }
@@ -160,6 +162,16 @@ namespace WebClient.Controllers
             service.CreateOrUpdateDiagnosis(new DiagnosisServiceBindingModel {  DiagnosisId=id, ServiceId=sid});
             return RedirectToAction("DiaSer", new { id = id });
         }
+        public IActionResult SendPdfSpravka(int id)
+        {
+            var services = service.Read(null);
+            string fileName = "C:\\data\\" +
+            $"Прейскурант на услуги за-{DateTime.Now.Year}.{DateTime.Now.Month}.{DateTime.Now.Day}" +
+            DateTime.Now.Minute + ".pdf";
+
+            report.SaveFileService(fileName, services, service.ReadDiagnosis(null), diagnos.Read(null));
+            return RedirectToAction("Service", new { id= id});
+        }
         [HttpPost]
         public ActionResult AddLec(AddServiceModel model)
         {
@@ -229,4 +241,14 @@ namespace WebClient.Controllers
         }
 
     }
+
+
+
+
+
+
+
+
+
+    
 }
