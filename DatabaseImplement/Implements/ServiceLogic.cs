@@ -67,7 +67,20 @@ namespace DatabaseImplement.Implements
 
         public void Delete(ServiceBindingModel model)
         {
-            throw new NotImplementedException();
+            using (var context = new KursachDatabase())
+            {
+                Service element = context.Services.FirstOrDefault(rec => rec.Id == model.Id);
+
+                if (element != null)
+                {
+                    context.Services.Remove(element);
+                    context.SaveChanges();
+                }
+                else
+                {
+                    throw new Exception("Элемент не найден");
+                }
+            }
         }
 
         public List<ServiceViewModel> Read(ServiceBindingModel model)
@@ -95,7 +108,7 @@ namespace DatabaseImplement.Implements
             {
                 return context.DiagnosisServices
                  .Where(rec => model == null
-                || (rec.Id == model.Id) || (model.DiagnosisId == rec.DiagnosisId && model.ServiceId == 0)||(model.DiagnosisId == rec.DiagnosisId && model.ServiceId==rec.ServiceId ))
+                || (rec.Id == model.Id) || (model.DiagnosisId ==0 && model.ServiceId == rec.ServiceId) || (model.DiagnosisId == rec.DiagnosisId && model.ServiceId == 0)||(model.DiagnosisId == rec.DiagnosisId && model.ServiceId==rec.ServiceId ))
                .Select(rec => new DiagnosisServiceViewModel
                {
                    Id = rec.Id,

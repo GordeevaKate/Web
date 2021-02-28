@@ -1,5 +1,27 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Архив услуг";
 }
+<div class="text-left text-info">
+    <h1> Архив услуг</h1>
+</div>
+<table class="table">
+    <tr>
+        <td>название</td>
+        <td>статус</td>
+        <td>сумма</td>
+    </tr>
+    @foreach (var dogovor in ViewBag.Service)
+    {
+        <tr>
+            <td>@dogovor.Name</td>
+            <td>@dogovor.Status</td>
+            <td>@dogovor.Cena</td>
+            <td>
+                <a class="btn btn-primary btn-sm" asp-controller="Admin" asp-route-id=@dogovor.Id asp-action="ArchiveService">Архивация</a>
+            </td>
+        </tr>
+    }
+</table>
+<div>
+   
+</div>

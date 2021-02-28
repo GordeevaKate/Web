@@ -5,10 +5,16 @@ using BusinessLogic.Report;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WebClient.Models;
+using System.Linq;
+using System.Runtime.Serialization.Json;
+using System.Threading.Tasks;
 using static BusinessLogic.Report.ReportLogic;
+using BusinessLogic.ViewModel;
+using System.IO.Compression;
 
 namespace WebClient.Controllers
 {
@@ -20,9 +26,11 @@ namespace WebClient.Controllers
         private readonly IDiagnosis diagnosis;
         private readonly IPacient pacient;
         private readonly IWard ward;
+        private readonly IService service;
         private readonly ReportLogic report;
-        public AdminController(ReportLogic report,IWard ward, IHealing healing,IPacient pacient, IDiagnosis diagnosis, IDoctor client)
+        public AdminController(IService service, ReportLogic report,IWard ward, IHealing healing,IPacient pacient, IDiagnosis diagnosis, IDoctor client)
         {
+            this.service = service;
             this.report = report;
             this.ward = ward;
             this.diagnosis = diagnosis;
@@ -221,7 +229,37 @@ namespace WebClient.Controllers
             return View("Report", new {Person=Person });
         }
 
-        public IActionResult ReportPere(string id)
+              public IActionResult ArchiveService(string id)
+        {
+
+            var services = service.Read(new ServiceBindingModel { Id = Convert.ToInt32(id) });//все договоры
+            string fileName =  $"C:\\data\\ArchiveOf{services[0].Name}";
+            Directory.CreateDirectory(fileName);
+            if (Directory.Exists(fileName))
+            {
+               
+                DataContractJsonSerializer jsonFormatter = new
+               DataContractJsonSerializer(typeof(List<ServiceViewModel>));
+                using (FileStream fs = new FileStream(string.Format("{0}/{1}.json",
+               fileName, "Services"), FileMode.OpenOrCreate))
+                {
+                    jsonFormatter.WriteObject(fs, services);
+                }
+                service.Delete(new ServiceBindingModel {Id=Convert.ToInt32(id) });
+                ZipFile.CreateFromDirectory(fileName, $"{fileName}.zip");
+                Directory.Delete(fileName, true);
+                return RedirectToAction("Archiv");
+            }
+            ViewBag.Service = service.Read(null);
+            return View("Archiv");
+        }
+
+    public IActionResult Archiv()
+       {
+            ViewBag.Service = service.Read(null);
+             return View();
+        }
+public IActionResult ReportPere(string id)
         {
             var heals = heal.Read(new HealingBindingModel { Data = new DateTime(Convert.ToInt32(id), 1, 1) });
             string fileName = "C:\\data\\" +
