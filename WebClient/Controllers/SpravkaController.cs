@@ -193,7 +193,11 @@ namespace WebClient.Controllers
                 TempData["CustomError"] = "Цена должна быть от 0";
                 return RedirectToAction("AddService", new { id = id, model = model });
             }
-           
+            var diagnoss = diagnos.Read(null);
+            diagnoss.Add(new DiagnosisViewModel { Id = 0, Name = "Все" });
+
+            ViewBag.Diagnos = new SelectList(diagnoss, "Id", "Name");
+            ViewBag.Id = 1;
             service.CreateOrUpdate(new ServiceBindingModel
             {
            Name=model.Name,
@@ -233,6 +237,12 @@ namespace WebClient.Controllers
                 Status = ServiceStatus.Процедура,
                 Cena = model.Count
             });
+            var diagnoss = diagnos.Read(null);
+            diagnoss.Add(new DiagnosisViewModel { Id = 0, Name = "Все" });
+
+            ViewBag.Diagnos = new SelectList(diagnoss, "Id", "Name");
+            ViewBag.Id = 2;
+
             return View("Service", new
             {
                 Dynamic = ViewBag.Diagnosis = service.Read(new ServiceBindingModel

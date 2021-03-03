@@ -3,6 +3,10 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">Приветствую</h1>
+    @if (Program.User != null)
+    {
+        <h1 class="display-4">@Program.User.Status @Program.User.Login</h1>
+    }
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>

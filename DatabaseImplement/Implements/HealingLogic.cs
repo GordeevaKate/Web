@@ -81,6 +81,7 @@ namespace DatabaseImplement.Implements
                 ||(model.DoctorId == rec.DoctorId && model.PacientId == model.PacientId&& model.WardId==0)||
                 (model.DoctorId == rec.DoctorId && model.PacientId == model.PacientId &&
                 model.WardId == rec.WardId && rec.DiagnosisId==model.DiagnosisId)
+                  || (model.DoctorId == 0 && model.PacientId == model.PacientId )
                  )
                .Select(rec => new HealingViewModel
                {

@@ -19,13 +19,16 @@
     <td>@doctor.Status</td>
     @if (@doctor.Status == BusinessLogic.Enums.OutStatus.Непринято)
     {
+        @if ((Program.User.Status == BusinessLogic.Enums.DoctorStatus.Медперсонал))
+        {
         <td>
             <a class="btn btn-primary btn-sm" asp-action="ServiceOut" asp-route-id="@doctor.Id" asp-route-pacientid="@ViewBag.PacientId"
                asp-route-heallingid="@ViewBag.HealId">Выполнить</a>
         </td>
+        }
         @foreach (BusinessLogic.ViewModel.ServiceViewModel service in ViewBag.Service)
         {
-            @if ((service.Status == BusinessLogic.Enums.ServiceStatus.Лекарство)&&(service.Id==doctor.ServiseId)&&(Program.User.Status==BusinessLogic.Enums.DoctorStatus.Медперсонал))
+            @if ((service.Status == BusinessLogic.Enums.ServiceStatus.Лекарство)&&(service.Id==doctor.ServiseId))
             {
 
 <td>

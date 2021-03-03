@@ -67,7 +67,15 @@ namespace WebClient.Controllers
             ViewBag.Id = id;
             ViewBag.Diagnos = diagnos.Read(null);
             ViewBag.Pacient = p.Read(null);
-            ViewBag.Healing = heal.Read(new HealingBindingModel {DoctorId= (int)Program.User.Id, PacientId=id});
+            if (Program.User.Status == BusinessLogic.Enums.DoctorStatus.Лечащий_Врач)
+            {
+                ViewBag.Healing = heal.Read(new HealingBindingModel { DoctorId = (int)Program.User.Id, PacientId = id });
+            }
+            else
+            {
+                ViewBag.Healing = heal.Read(new HealingBindingModel { PacientId = id });
+
+            }
             return View();
         }
         public IActionResult AddHealing(int id)

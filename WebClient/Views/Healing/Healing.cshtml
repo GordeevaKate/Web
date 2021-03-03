@@ -6,8 +6,10 @@
     <h1>Лечение</h1>
 </div>
 <hr /
+  @if (Program.User.Status == BusinessLogic.Enums.DoctorStatus.Лечащий_Врач)
+  {
 <p> <strong> <a class="btn btn-success" asp-area="" asp-controller="Healing" asp-route-id="@ViewBag.Id" asp-action="AddHealing">Добавить лечение</a></strong></p>
-<hr />
+  }<hr />
 <table class="table">
     <tr>
         <td>Дата</td>
